@@ -22,3 +22,31 @@
      https://github.com/firebase/php-jwt
 
 4. ## Decode
+
+   - es muy importante tener el key que se uso para hacer el encode, y el tipo de hash que se uso, si no no funciona, esto nos devolvera un objeto el cual hay que hacer entendible para PHP
+
+     ```php
+     $key = "Key_de_seguridad_para_usar_en_mi_App_con_caracteresYNumeros";
+
+        // esto nos devuelve un objeto
+        $decoded = JWT::decode($tokenEncode, new Key($key, 'HS512'));
+
+        //  con esto lo convertimos a un array entendible para php
+        $decoded_array = (array) $decoded;
+     ```
+
+5. ## pasando cookies con parametro httpOnly
+
+   - Desde el backend en los headers donde esta el cors tenemos que permitirles el attributo credetials, para que lo reciba `header("Access-Control-Allow-Credentials: true");` NOTA: el se habilita el `Access-Control-Allow-Origin` ya no puede ser `*`, tiene que ser a juro el dominio donde se usara ej. en cors
+   - Desde el front hay que agregar el parametro de `credentials: 'include'` en los fetch, NOTA: fuera de los headers ej.
+     ```jsx
+     const getApi = await fetch(urlApi, {
+       method: method,
+       headers: HEADERS,
+       credentials: "include",
+       body: JSON.stringify(data),
+     })
+     ```
+   - y desde el back se vuelven a recibir con `$_COOKIE` en un array con todas cookies
+
+   - con esto lo que tenemos es que verificarlo con el token que esta en la base de datos y si considen pasar a hacer la consulta de correspondiente en la DB

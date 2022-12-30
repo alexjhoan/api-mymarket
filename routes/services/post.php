@@ -81,11 +81,6 @@ function formRegister()
 function formLogin()
 {
 
-  // $headers = apache_request_headers();
-  // print_r($headers);
-
-  // print_r($_COOKIE);
-
   $post = json_decode(file_get_contents("php://input"), true);
 
   // filter var: limpia cualquier cosa para que no inyecten codigo
@@ -109,8 +104,8 @@ function formLogin()
         // actualizamos el token y la expriracion del token del usuario
 
         updateTokenUser($userExist, $token);
-
-        // header(setcookie("TestCookie", $token['jwt']));
+       
+        header(setcookie("MyMarketTok3nHttp0lnt", $token['jwt'], time() + 60 * 60 * 24 * 60, '/', null, false, true));
 
         $json = [
           'status' => 200,
@@ -146,6 +141,54 @@ function formLogin()
       'statusText' => 'Email dont exists'
     ];
     echo json_encode($json, http_response_code($json["status"]));
+  }
+}
+
+function pruebaPost()
+{
+  // para eliminar cookkies solo setea la misma cokkie con un tiempo en pasado
+  // header(setcookie("MyMarketTok3nHttp0lnt", '', time() - 3600, '/', null, null, true));
+
+
+  $post = json_decode(file_get_contents("php://input"), true);
+
+
+  $email = filter_var(strtolower($post['email']), FILTER_SANITIZE_EMAIL);
+  $password = $post['password'];
+  $userExist = getUserIsExist($email);
+
+
+  // $headers = apache_request_headers();
+  // print_r($headers);
+
+  if ($userExist != false) {
+    $mycookie = $_COOKIE["MyMarketTok3nHttp0lnt"] ?? 'vacio';
+    // print_r($mycookie);
+    $mycookieDecode = $mycookie != 'vacio' ? Utils::JwtDecode($mycookie) : 'vacio';
+    // print_r($mycookieDecode);
+    // echo '<br \>';
+    // echo '<br \>';
+    // echo '<br \>';
+    // echo '<br \>';
+    // print_r($email);
+    // print_r($password);
+
+    $variable = $mycookieDecode != 'vacio' ? $mycookieDecode["exp"] : 0;
+    if ($variable > 0) {
+      $json = [
+        'status' => 200,
+        'body' => $mycookie,
+        'statusText' => 'yeah'
+      ];
+      echo json_encode($json, http_response_code($json["status"]));
+    } else {
+      $json = [
+        'status' => 200,
+        'body' => $mycookie,
+        'statusText' => 'errroooorrrrrr'
+      ];
+      echo json_encode($json, http_response_code($json["status"]));
+    }
   }
 }
 

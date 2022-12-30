@@ -54,6 +54,8 @@ if (!empty($routesArray) && isset($_SERVER['REQUEST_METHOD'])) {
         formLogin($routesArray[0]);
       } else if ($routesArray[0] == 'register') {
         formRegister($routesArray[0]);
+      } else if ($routesArray[0] == 'prueba-post') {
+        pruebaPost($routesArray[0]);
       } else {
         methodDefault($routesArray[0]);
       }

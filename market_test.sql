@@ -25,11 +25,11 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_categories` ()   BEGIN
+CREATE PROCEDURE `get_categories` ()   BEGIN
 select c.id_category as id ,c.category as "name" from categories c order by c.category;
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_product_by_user_and_category` (`p_id_user` INT, `p_id_category` INT)   begin
+CREATE PROCEDURE `get_product_by_user_and_category` (`p_id_user` INT, `p_id_category` INT)   begin
 select u.*, p.name_product, p.id_product, up.stok_product, c.category from products p
 inner join users_products up
 on p.id_product=up.product_id
@@ -40,12 +40,12 @@ on p.category_id=c.id_category
 where u.id_user = p_id_user and c.id_category = p_id_category;
 end$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `new_user` (`p_email` VARCHAR(45), `p_password` VARCHAR(256), `p_first_name` VARCHAR(110), `p_last_name` VARCHAR(110), `p_phone` VARCHAR(20))   BEGIN
+CREATE PROCEDURE `new_user` (`p_email` VARCHAR(45), `p_password` VARCHAR(256), `p_first_name` VARCHAR(110), `p_last_name` VARCHAR(110), `p_phone` VARCHAR(20))   BEGIN
 INSERT INTO users(`email`, `password`, `first_name`, `last_name`, `phone`) 
 VALUES (p_email, p_password, p_first_name, p_last_name, p_phone);
 END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `update_token_user` (`p_id_user` INT(11), `p_token` VARCHAR(255), `p_exp_token` INT(50))   BEGIN
+CREATE PROCEDURE `update_token_user` (`p_id_user` INT(11), `p_token` VARCHAR(255), `p_exp_token` INT(50))   BEGIN
 UPDATE users SET 
 user_token=p_token,
 exp_token=p_exp_token
