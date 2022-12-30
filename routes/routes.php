@@ -1,5 +1,6 @@
 <?php
 include_once 'cors.php';
+include_once 'utils.php';
 
 // obtenermos la url y la divinimos segun el /
 $routesArray = explode("/", $_SERVER['REQUEST_URI']);
@@ -37,6 +38,10 @@ if (empty($routesArray)) {
 }
 
 if (!empty($routesArray) && isset($_SERVER['REQUEST_METHOD'])) {
+  if ($routesArray[0] != 'login' && $routesArray[0] != 'register') {
+    Utils::JwtValidate();
+    print_r('no es alguno');
+  };
   switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
       include_once 'services/get.php';

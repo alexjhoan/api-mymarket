@@ -1,7 +1,6 @@
 <?php
 
 require_once "db.php";
-require_once "get.php";
 require_once "put.php";
 require_once "utils.php";
 
@@ -17,7 +16,7 @@ function formRegister()
   $lastName = $post['last_name'];
   $phone = $post['phone'];
 
-  $userExist = getUserIsExist($email);
+  $userExist = Utils::IsUserExist($email);
 
   if ($userExist == false) {
     if (isset($email) && isset($password) && isset($firstName) && isset($lastName)) {
@@ -86,11 +85,11 @@ function formLogin()
   // filter var: limpia cualquier cosa para que no inyecten codigo
   $email = filter_var(strtolower($post['email']), FILTER_SANITIZE_EMAIL);
   $password = $post['password'];
-  $userExist = getUserIsExist($email);
+  $userExist = Utils::IsUserExist($email);
 
   if ($userExist != false) {
     if (isset($email) && isset($password)) {
-      // encriptar el password  
+      // desencriptar el password  
       $verify = password_verify($password, $userExist['password']);
 
       if ($verify) {
@@ -104,8 +103,14 @@ function formLogin()
         // actualizamos el token y la expriracion del token del usuario
 
         updateTokenUser($userExist, $token);
-       
+
+        // nota el antepenultimo valor quere decir si es https seguro, cuando este en produccion se pasa a true
+
+        // token expira a los 2 meses
         header(setcookie("MyMarketTok3nHttp0lnt", $token['jwt'], time() + 60 * 60 * 24 * 60, '/', null, false, true));
+
+        // para eliminar cookkies solo setea la misma cokkie con un tiempo en pasado
+        // header(setcookie("MyMarketTok3nHttp0lnt", '', time() - 3600, '/', null, null, true));
 
         $json = [
           'status' => 200,
@@ -146,50 +151,49 @@ function formLogin()
 
 function pruebaPost()
 {
-  // para eliminar cookkies solo setea la misma cokkie con un tiempo en pasado
-  // header(setcookie("MyMarketTok3nHttp0lnt", '', time() - 3600, '/', null, null, true));
-
 
   $post = json_decode(file_get_contents("php://input"), true);
 
 
   $email = filter_var(strtolower($post['email']), FILTER_SANITIZE_EMAIL);
   $password = $post['password'];
-  $userExist = getUserIsExist($email);
+
+  // $ver = Utils::JwtValidate();
+  // print_r($ver);
 
 
-  // $headers = apache_request_headers();
-  // print_r($headers);
+  // // $headers = apache_request_headers();
+  // // print_r($headers);
 
-  if ($userExist != false) {
-    $mycookie = $_COOKIE["MyMarketTok3nHttp0lnt"] ?? 'vacio';
-    // print_r($mycookie);
-    $mycookieDecode = $mycookie != 'vacio' ? Utils::JwtDecode($mycookie) : 'vacio';
-    // print_r($mycookieDecode);
-    // echo '<br \>';
-    // echo '<br \>';
-    // echo '<br \>';
-    // echo '<br \>';
-    // print_r($email);
-    // print_r($password);
+  // if ($userExist != false) {
+  //   $mycookie = $_COOKIE["MyMarketTok3nHttp0lnt"] ?? 'vacio';
+  //   // print_r($mycookie);
+  //   $mycookieDecode = $mycookie != 'vacio' ? Utils::JwtDecode($mycookie) : 'vacio';
+  //   // print_r($mycookieDecode);
+  //   // echo '<br \>';
+  //   // echo '<br \>';
+  //   // echo '<br \>';
+  //   // echo '<br \>';
+  //   // print_r($email);
+  //   // print_r($password);
 
-    $variable = $mycookieDecode != 'vacio' ? $mycookieDecode["exp"] : 0;
-    if ($variable > 0) {
-      $json = [
-        'status' => 200,
-        'body' => $mycookie,
-        'statusText' => 'yeah'
-      ];
-      echo json_encode($json, http_response_code($json["status"]));
-    } else {
-      $json = [
-        'status' => 200,
-        'body' => $mycookie,
-        'statusText' => 'errroooorrrrrr'
-      ];
-      echo json_encode($json, http_response_code($json["status"]));
-    }
-  }
+  //   $variable = $mycookieDecode != 'vacio' ? $mycookieDecode["exp"] : 0;
+  //   if ($variable > 0) {
+  //     $json = [
+  //       'status' => 200,
+  //       'body' => $mycookie,
+  //       'statusText' => 'yeah'
+  //     ];
+  //     echo json_encode($json, http_response_code($json["status"]));
+  //   } else {
+  //     $json = [
+  //       'status' => 200,
+  //       'body' => $mycookie,
+  //       'statusText' => 'errroooorrrrrr'
+  //     ];
+  //     echo json_encode($json, http_response_code($json["status"]));
+  //   }
+  // }
 }
 
 

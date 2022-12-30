@@ -3,34 +3,6 @@
 require_once "db.php";
 require_once "utils.php";
 
-function getUserIsExist($user)
-{
-  $db = DataBase::getConnection();
-  $sql = "select * from users u where u.email = ? limit 1";
-  try {
-    $stmt = $db->prepare($sql);
-    $stmt->bind_param("s", $user);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-
-      return $result->fetch_assoc();
-    } else {
-      return false;
-    }
-  } catch (mysqli_sql_exception $error) {
-    $json = [
-      'status' => 500,
-      'body' => [],
-      'statusText' => $error->getMessage()
-    ];
-    echo json_encode($json, http_response_code($json["status"]));
-  }
-  $stmt->close();
-  $db->close();
-}
-
 function getCategories()
 {
   $db = DataBase::getConnection();
