@@ -38,9 +38,10 @@ if (empty($routesArray)) {
 }
 
 if (!empty($routesArray) && isset($_SERVER['REQUEST_METHOD'])) {
-  if ($routesArray[0] != 'login' && $routesArray[0] != 'register') {
-    Utils::JwtValidate();
-  };
+  // NOTA: este JwtValidate no funciona aqui, hay que meterlo dentro de los metodos para probar
+  // if ($routesArray[0] != 'login' && $routesArray[0] != 'register') {
+  //   Utils::JwtValidate();
+  // };
   switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
       include_once 'services/get.php';
