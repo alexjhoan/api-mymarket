@@ -79,7 +79,6 @@ function formRegister()
 
 function formLogin()
 {
-
   $post = json_decode(file_get_contents("php://input"), true);
 
   // filter var: limpia cualquier cosa para que no inyecten codigo
@@ -115,6 +114,7 @@ function formLogin()
         $json = [
           'status' => 200,
           'body' => [
+            'user_id' => $userExist['id_user'],
             'first_name' => $userExist['first_name'],
             'last_name' => $userExist['last_name'],
             'token' => $token['jwt'],

@@ -2,9 +2,13 @@
 
 $dominioPermitido = "http://localhost:3000";
 
-if ($_SERVER['HTTP_ORIGIN'] == "https://d4webs.com") {
-  $dominioPermitido = "https://d4webs.com";
-}
+
+print_r($_SERVER);
+
+
+// if ($_SERVER['HTTP_ORIGIN'] == "https://d4webs.com") {
+//   $dominioPermitido = "https://d4webs.com";
+// }
 
 header("Access-Control-Allow-Origin: $dominioPermitido");
 header("Content-Type: application/json; charset=UTF-8");

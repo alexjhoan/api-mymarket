@@ -40,15 +40,18 @@ if (empty($routesArray)) {
 if (!empty($routesArray) && isset($_SERVER['REQUEST_METHOD'])) {
   if ($routesArray[0] != 'login' && $routesArray[0] != 'register') {
     Utils::JwtValidate();
-    print_r('no es alguno');
   };
   switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
       include_once 'services/get.php';
       if ($routesArray[0] == 'categories') {
-        getCategories($routesArray[0]);
-      } else if (str_contains($routesArray[0], 'products')) {
-        getProductByUserAndCategory($routesArray[0]);
+        getCategories();
+      } else if (str_contains($routesArray[0], 'user_products')) {
+        getProductsByUserAndCategory();
+      } else if (str_contains($routesArray[0], 'all_products')) {
+        getAllproductsbyCategory();
+      } else if (str_contains($routesArray[0], 'detail_product')) {
+        getProductById();
       } else {
         methodDefault($routesArray[0]);
       }
