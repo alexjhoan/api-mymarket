@@ -91,6 +91,7 @@ class Utils
     $mycookie = $_COOKIE["MyMarketTok3nHttp0lnt"] ?? 'empty';
     $mycookieDecode = $mycookie != 'empty' ? Utils::JwtDecode($mycookie) : 'empty';
 
+
     if ($mycookieDecode != 'empty') {
       // se usa el (array) para convertir un objeto a un array entendible
       $decodedTokenData = (array) $mycookieDecode["data"];
@@ -100,6 +101,7 @@ class Utils
       $userData = Utils::IsUserExist(null, $decodedTokenData['id_user']);
 
       // 3. validamos que la cookie recibida es la misma que esta en la DB y verificamos que no alla expirado
+
       if ($userData["user_token"] == $mycookie && $userData['exp_token'] > Time()) {
         return true;
       } else {

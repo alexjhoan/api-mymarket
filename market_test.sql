@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 30-12-2022 a las 00:40:38
+-- Tiempo de generación: 31-12-2022 a las 02:01:51
 -- Versión del servidor: 10.4.24-MariaDB
 -- Versión de PHP: 8.1.6
 
@@ -29,6 +29,24 @@ CREATE PROCEDURE `get_categories` ()   BEGIN
 select c.id_category as id ,c.category as "name" from categories c order by c.category;
 END$$
 
+CREATE PROCEDURE `get_products_by_category` (`p_id_category` INT(11))   BEGIN
+select p.id_product, p.name_product from products p
+inner join categories c
+on p.category_id = c.id_category
+where c.id_category = p_id_category;
+END$$
+
+CREATE PROCEDURE `get_products_by_user_and_category` (`p_id_user` INT, `p_id_category` INT)   begin
+select u.*, p.name_product, p.id_product, up.stok_product, c.category from products p
+inner join users_products up
+on p.id_product=up.product_id
+inner join users u
+on up.user_id=u.id_user
+inner join categories c
+on p.category_id=c.id_category
+where u.id_user = p_id_user and c.id_category = p_id_category;
+end$$
+
 CREATE PROCEDURE `get_product_by_user_and_category` (`p_id_user` INT, `p_id_category` INT)   begin
 select u.*, p.name_product, p.id_product, up.stok_product, c.category from products p
 inner join users_products up
@@ -45,7 +63,7 @@ INSERT INTO users(`email`, `password`, `first_name`, `last_name`, `phone`)
 VALUES (p_email, p_password, p_first_name, p_last_name, p_phone);
 END$$
 
-CREATE PROCEDURE `update_token_user` (`p_id_user` INT(11), `p_token` VARCHAR(255), `p_exp_token` INT(50))   BEGIN
+CREATE PROCEDURE `update_token_user` (IN `p_id_user` INT(11), IN `p_token` VARCHAR(650), IN `p_exp_token` INT(50))   BEGIN
 UPDATE users SET 
 user_token=p_token,
 exp_token=p_exp_token
@@ -118,7 +136,7 @@ CREATE TABLE `users` (
   `first_name` varchar(110) COLLATE utf8_spanish2_ci NOT NULL,
   `last_name` varchar(110) COLLATE utf8_spanish2_ci NOT NULL,
   `phone` varchar(20) COLLATE utf8_spanish2_ci DEFAULT NULL,
-  `user_token` varchar(255) COLLATE utf8_spanish2_ci NOT NULL,
+  `user_token` varchar(650) COLLATE utf8_spanish2_ci NOT NULL,
   `exp_token` int(50) NOT NULL,
   `create_at` datetime DEFAULT current_timestamp(),
   `update_at` datetime DEFAULT NULL
@@ -129,7 +147,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `email`, `password`, `first_name`, `last_name`, `phone`, `user_token`, `exp_token`, `create_at`, `update_at`) VALUES
-(29, 'alex@alex.com', '$2y$10$SfTvEXhxF/QpqHX3Mwl5W.jugUAtsNrfmi6kSIRrPXdMloBIkR6Jq', 'alex', 'vivas', NULL, 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NzIzNTcwNzQsImV4cCI6MTY3NDk0OTA3NCwiZGF0YSI6eyJpZF91c2VyIjoyOSwiZW1haWwiOiJhbGV4QGFsZXguY29tIiwiZmlyc3RfbmFtZSI6ImFsZXgiLCJsYXN0X25hbWUiOiJ2aXZhcyJ9fQ.iIYlwMqswR0uiiAcv4v1foh6TE7frrLFXnDIqWDFbWtDxTQEDzOpM32', 1674949074, '2022-12-28 16:14:21', NULL),
+(29, 'alex@alex.com', '$2y$10$SfTvEXhxF/QpqHX3Mwl5W.jugUAtsNrfmi6kSIRrPXdMloBIkR6Jq', 'alex', 'vivas', NULL, 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NzI0NDUxNDksImV4cCI6MTY3NTAzNzE0OSwiZGF0YSI6eyJpZF91c2VyIjoyOSwiZW1haWwiOiJhbGV4QGFsZXguY29tIiwiZmlyc3RfbmFtZSI6ImFsZXgiLCJsYXN0X25hbWUiOiJ2aXZhcyJ9fQ.byef32qW8r108G8VYob1hFjc8883opxioZLuQ6sG95ULSaYg0KsxFdOKVOYc5kasjrT4S6gZn3o4ntotRmsVxw', 1675037149, '2022-12-28 16:14:21', NULL),
 (30, 'alex10@alex.com', '$2y$10$kMWy2faYk2ObpUzR9sbp7OvCSreDuEL4cnPhruPab/8pDW8IiCFTC', 'alex', 'vivas', NULL, 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2NzIyNzE3MzUsImV4cCI6MTY3NDg2MzczNSwiZGF0YSI6eyJmaXJzdF9uYW1lIjoiYWxleCIsImxhc3RfbmFtZSI6InZpdmFzIn19.vYK0ffsl_IVws7Pdik5J8kE1fz2Gc1Aj9jEAG1CqodrDyHnjKzx7-KYo6WgvaOSUC9Z1DW7ccBDZ8Rx7pFOKFg', 1674863735, '2022-12-28 16:29:30', NULL);
 
 -- --------------------------------------------------------

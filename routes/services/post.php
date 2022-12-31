@@ -105,8 +105,18 @@ function formLogin()
 
         // nota el antepenultimo valor quere decir si es https seguro, cuando este en produccion se pasa a true
 
+        $tokenOptions = [
+          'expires' => time() + 60 * 60 * 24 * 60,
+          'path' => '/',
+          'domain' => 'localhost', // leading dot for compatibility or use subdomain
+          'secure' => false,     // or false
+          'httponly' => true,    // or false
+          'samesite' => 'Lax' // None || Lax  || Strict
+        ];
+
+        header(setcookie("MyMarketTok3nHttp0lnt", $token['jwt'], $tokenOptions));
         // token expira a los 2 meses
-        header(setcookie("MyMarketTok3nHttp0lnt", $token['jwt'], time() + 60 * 60 * 24 * 60, '/', null, false, true));
+        // header(setcookie("MyMarketTok3nHttp0lnt", $token['jwt'], time() + 60 * 60 * 24 * 60, '/', null, false, true));
 
         // para eliminar cookkies solo setea la misma cokkie con un tiempo en pasado
         // header(setcookie("MyMarketTok3nHttp0lnt", '', time() - 3600, '/', null, null, true));
@@ -151,12 +161,20 @@ function formLogin()
 
 function pruebaPost()
 {
+  Utils::JwtValidate();
 
   $post = json_decode(file_get_contents("php://input"), true);
 
 
   $email = filter_var(strtolower($post['email']), FILTER_SANITIZE_EMAIL);
   $password = $post['password'];
+
+  $json = [
+    'status' => 200,
+    'body' => $email,
+    'statusText' => 'errroooorrrrrr'
+  ];
+  echo json_encode($json, http_response_code($json["status"]));
 
   // $ver = Utils::JwtValidate();
   // print_r($ver);
