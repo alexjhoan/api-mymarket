@@ -91,7 +91,6 @@ class Utils
     $mycookie = $_COOKIE["MyMarketTok3nHttp0lnt"] ?? 'empty';
     $mycookieDecode = $mycookie != 'empty' ? Utils::JwtDecode($mycookie) : 'empty';
 
-
     if ($mycookieDecode != 'empty') {
       // se usa el (array) para convertir un objeto a un array entendible
       $decodedTokenData = (array) $mycookieDecode["data"];

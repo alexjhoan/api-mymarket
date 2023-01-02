@@ -108,10 +108,10 @@ function formLogin()
         $tokenOptions = [
           'expires' => time() + 60 * 60 * 24 * 60,
           'path' => '/',
-          'domain' => 'localhost', // leading dot for compatibility or use subdomain
+          'domain' => 'd4webs.com', // leading dot for compatibility or use subdomain
           'secure' => false,     // or false
           'httponly' => true,    // or false
-          'samesite' => 'Lax' // None || Lax  || Strict
+          'samesite' => 'None' // None || Lax  || Strict
         ];
 
         header(setcookie("MyMarketTok3nHttp0lnt", $token['jwt'], $tokenOptions));
@@ -161,7 +161,19 @@ function formLogin()
 
 function pruebaPost()
 {
-  Utils::JwtValidate();
+  // para eliminar cookkies solo setea la misma cokkie con un tiempo en pasado
+  //   header(setcookie("MyMarketTok3nHttp0lnt", '', time() - 3600, '/', null, null, true));
+
+  //   $tokenOptions = [
+  //           'expires' => time() - 3600,
+  //           'path' => '/',
+  //           'domain' => 'd4webs.com', // leading dot for compatibility or use subdomain
+  //           'secure' => false,     // or false
+  //           'httponly' => true,    // or false
+  //           'samesite' => 'None' // None || Lax  || Strict
+  //         ];
+
+  //         header(setcookie("MyMarketTok3nHttp0lnt", $token['jwt'], $tokenOptions));
 
   $post = json_decode(file_get_contents("php://input"), true);
 

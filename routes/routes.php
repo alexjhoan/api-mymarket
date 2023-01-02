@@ -44,6 +44,7 @@ if (!empty($routesArray) && isset($_SERVER['REQUEST_METHOD'])) {
   // };
   switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
+      Utils::JwtValidate();
       include_once 'services/get.php';
       if ($routesArray[0] == 'categories') {
         getCategories();
@@ -64,16 +65,19 @@ if (!empty($routesArray) && isset($_SERVER['REQUEST_METHOD'])) {
       } else if ($routesArray[0] == 'register') {
         formRegister($routesArray[0]);
       } else if ($routesArray[0] == 'prueba-post') {
+        Utils::JwtValidate();
         pruebaPost($routesArray[0]);
       } else {
         methodDefault($routesArray[0]);
       }
       break;
     case 'PUT':
+      Utils::JwtValidate();
       include_once 'services/put.php';
       putData($routesArray[0]);
       break;
     case 'DELETE':
+      Utils::JwtValidate();
       include_once 'services/delete.php';
       deleteData($routesArray[0]);
       break;

@@ -5,8 +5,6 @@ require_once "utils.php";
 
 function getCategories()
 {
-  Utils::JwtValidate();
-
   $db = DataBase::getConnection();
   $sql = "CALL get_categories()";
   try {
