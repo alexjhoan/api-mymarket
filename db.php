@@ -5,7 +5,7 @@
 // user y pass en hosting
 // dwebsco6_dwebsco6_alex
 // Nv!DJp3V)yPh
-// nombre de DB dwebsco6_mymarket_test
+// nombre de DB dwebsco6_market_test
 
 // produccion
 // class DataBase
@@ -13,9 +13,9 @@
 //   static public function getConnection()
 //   {
 //      $host = 'localhost';
-    // $user = 'dwebsco6_wp267';
-    // $password = 'k43R-4@2[)bSep.7';
-    // $namedb = 'dwebsco6_mymarket_test';
+// $user = 'dwebsco6_wp267';
+// $password = 'k43R-4@2[)bSep.7';
+// $namedb = 'dwebsco6_market_test';
 
 //     $db = new mysqli($host, $user, $password, $namedb);
 

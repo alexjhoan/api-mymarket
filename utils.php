@@ -102,7 +102,7 @@ class Utils
       // 3. validamos que la cookie recibida es la misma que esta en la DB y verificamos que no alla expirado
 
       if ($userData["user_token"] == $mycookie && $userData['exp_token'] > Time()) {
-        return true;
+        return $decodedTokenData;
       } else {
         $json = [
           'status' => 401,

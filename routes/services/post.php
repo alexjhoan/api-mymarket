@@ -14,7 +14,7 @@ function formRegister()
   $password = $post['password'];
   $firstName = $post['first_name'];
   $lastName = $post['last_name'];
-  $phone = $post['phone'];
+  $phone = $post['phone'] ?? null;
 
   $userExist = Utils::IsUserExist($email);
 
@@ -108,7 +108,7 @@ function formLogin()
         $tokenOptions = [
           'expires' => time() + 60 * 60 * 24 * 60,
           'path' => '/',
-          'domain' => 'd4webs.com', // leading dot for compatibility or use subdomain
+          'domain' => 'localhost', // leading dot for compatibility or use subdomain
           'secure' => false,     // or false
           'httponly' => true,    // or false
           'samesite' => 'None' // None || Lax  || Strict
@@ -154,6 +154,68 @@ function formLogin()
       'status' => 404,
       'body' => [],
       'statusText' => 'Email dont exists'
+    ];
+    echo json_encode($json, http_response_code($json["status"]));
+  }
+}
+
+function createProduct($userData)
+{
+
+  $post = json_decode(file_get_contents("php://input"), true, 512, JSON_BIGINT_AS_STRING);
+  // $user_id = $userData['id_user'];
+
+  $user_id = 1;
+  $product_name = $post['product_name'];
+  $product_barcode = explode(" ", $post['product_barcode'])[1];
+  $category = $post['id_category'];
+  $brand = $post['id_brand'];
+  $unit = $post['id_unit'];
+  $quantity = $post['quantity'];
+  $location = $post['location'];
+
+  var_dump($product_barcode);
+
+  if (isset($product_name) && isset($product_barcode) && isset($category) && isset($brand) && isset($unit) && isset($location)) {
+    $db = DataBase::getConnection();
+    $sql = "CALL new_product(?, ?, ?, ?, ?, ?, ?, ?)";
+
+    try {
+      $stmt = $db->prepare($sql);
+      $stmt->bind_param("ssiiiiii", $product_name, $product_barcode, $category, $brand, $unit, $quantity, $user_id, $location);
+      $stmt->execute();
+
+      if ($stmt->affected_rows > 0) {
+        $json = [
+          'status' => 201,
+          'body' => [],
+          'statusText' => 'Product created successfully'
+        ];
+        echo json_encode($json, http_response_code($json["status"]));
+      } else {
+        $json = [
+          'status' => 500,
+          'body' => [],
+          'statusText' => $stmt->error
+        ];
+        echo json_encode($json, http_response_code($json["status"]));
+      }
+    } catch (mysqli_sql_exception $error) {
+      $json = [
+        'status' => 500,
+        'body' => [],
+        'statusText' => $error->getMessage()
+      ];
+      echo json_encode($json, http_response_code($json["status"]));
+    }
+
+    $stmt->close();
+    $db->close();
+  } else {
+    $json = [
+      'status' => 400,
+      'body' => [],
+      'statusText' => 'Some parameter is missing',
     ];
     echo json_encode($json, http_response_code($json["status"]));
   }

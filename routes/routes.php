@@ -44,40 +44,47 @@ if (!empty($routesArray) && isset($_SERVER['REQUEST_METHOD'])) {
   // };
   switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
-      Utils::JwtValidate();
+      if ($routesArray[0] !== 'login' && $routesArray[0] !== 'register') {
+        $userData = Utils::JwtValidate() ?? null;
+      }
       include_once 'services/get.php';
       if ($routesArray[0] == 'categories') {
         getCategories();
-      } else if (str_contains($routesArray[0], 'user_products')) {
-        getProductsByUserAndCategory();
-      } else if (str_contains($routesArray[0], 'all_products')) {
+      } else if ($routesArray[0] == 'locations') {
+        getLocationByUser($userData);
+      } else if (strpos($routesArray[0], 'user_products') !== false) {
+        getProductsByUserAndCategory($userData);
+      } else  if (strpos($routesArray[0], 'all_products') !== false) {
         getAllproductsbyCategory();
-      } else if (str_contains($routesArray[0], 'detail_product')) {
+      } else if (strpos($routesArray[0], 'detail_product') !== false) {
         getProductById();
       } else {
         methodDefault($routesArray[0]);
       }
       break;
     case 'POST':
+      // if ($routesArray[0] !== 'login' && $routesArray[0] !== 'register') {
+      //   $userData = Utils::JwtValidate() ?? null;
+      // }
       include_once 'services/post.php';
       if ($routesArray[0] == 'login') {
         formLogin($routesArray[0]);
       } else if ($routesArray[0] == 'register') {
         formRegister($routesArray[0]);
       } else if ($routesArray[0] == 'prueba-post') {
-        Utils::JwtValidate();
         pruebaPost($routesArray[0]);
+      } else if ($routesArray[0] == 'new-product') {
+        // createProduct($userData);
+        createProduct(1);
       } else {
         methodDefault($routesArray[0]);
       }
       break;
     case 'PUT':
-      Utils::JwtValidate();
       include_once 'services/put.php';
       putData($routesArray[0]);
       break;
     case 'DELETE':
-      Utils::JwtValidate();
       include_once 'services/delete.php';
       deleteData($routesArray[0]);
       break;
